@@ -213,6 +213,8 @@ body {
 
 	.MainInfoDetail {
 		flex-direction: column;
+		align-items: flex-start;
+		justify-content: center;
 	}
 
 	.MainInfoDetail img {
@@ -226,15 +228,28 @@ body {
 	.SearchCountryForm {
 		width: 40%;
 	}
+
+	.BorderCountries {
+		margin-bottom: 50px;
+		align-items: flex-start;
+	}
 }
 
 @media screen and (width < 530px) {
 	.Countries {
 		grid-template-columns: repeat(1, 1fr);
+		margin: 0 20px;
 	}
+
 	.SearchCountryForm {
 		width: 50%;
+		margin-left: 20px;
 	}
+
+	.FilterRegions {
+		margin-right: -30px;
+	}
+
 	.AllInfoDetail {
 		margin: 0 20px;
 	}
