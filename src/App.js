@@ -1,25 +1,63 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState, useEffect } from "react";
+import useFetchHome from "./hooks/useFetchHome";
+import { Route, Routes } from "react-router-dom";
+import Header from "./Header";
+import Home from "./Home";
+import DisplayCountryDetail from "./DisplayCountryDetail";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+	const API_URL_ALL = "https://restcountries.com/v3.1/all";
+	const [data, setData] = useState([]);
+	const [searchedCountry, setSearchedCountry] = useState("");
+	const [filteredRegion, setFilteredRegion] = useState("");
+	const { fetchedData, fetchError, isLoading } = useFetchHome(API_URL_ALL);
+
+	useEffect(() => {
+		let id = -1;
+		const changedFetchData = fetchedData.map((country) => {
+			id++;
+			return { ...country, id };
+		});
+		setData(changedFetchData);
+	}, [fetchedData]);
+
+	const handleFilterData = () => {
+		const searchData = data.filter((country) =>
+			country.name.official
+				.toLowerCase()
+				.includes(searchedCountry.toLowerCase())
+		);
+		const filterData = searchData.filter((country) =>
+			country.region.includes(filteredRegion)
+		);
+		return filterData;
+	};
+
+	return (
+		<div className="App">
+			<Header />
+			<Routes>
+				<Route
+					path="/"
+					element={
+						<Home
+							searchedCountry={searchedCountry}
+							setSearchedCountry={setSearchedCountry}
+							filteredRegion={filteredRegion}
+							setFilteredRegion={setFilteredRegion}
+							data={handleFilterData()}
+							fetchError={fetchError}
+							isLoading={isLoading}
+						/>
+					}
+				/>
+				<Route
+					path="/country/:id"
+					element={<DisplayCountryDetail data={data} />}
+				/>
+			</Routes>
+		</div>
+	);
 }
 
 export default App;
